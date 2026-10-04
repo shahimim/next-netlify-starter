@@ -1,38 +1,44 @@
-# Next + Netlify Starter
+# Fitroom — your digital wardrobe
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/ed50f56e-4fc2-4c98-8b66-1e5074c6f3d3/deploy-status)](https://app.netlify.com/sites/next-starter/deploys)
+Scan your clothes, capture a 360° turn of yourself, and get outfit combinations
+previewed on a spinnable version of you. Built with Next.js and deployable as a
+static site on Netlify.
 
-This is a [Next.js](https://nextjs.org/) v10.1 project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) and set up to be instantly deployed to [Netlify](https://url.netlify.com/SyTBPVamO)!
+## How it works
 
-This project is a very minimal starter that includes 2 sample components, a global stylesheet, a `netlify.toml` for deployment, and a `jsconfig.json` for setting up absolute imports and aliases. It also includes the [Essential Next.js Build Plugin](https://github.com/netlify/netlify-plugin-nextjs), which will allow for you to implement features like Preview Mode, server-side rendering/incremental static regeneration via Netlify Functions, and internationalized routing.
+1. **Scan** (`/scan`) — take or upload garment photos. The background is removed
+   with an edge flood-fill, the garment is cropped to its bounding box and its
+   dominant colour is extracted. Fix the name/category and save.
+2. **Wardrobe** (`/wardrobe`) — browse, filter by category, favourite and delete.
+3. **Body** (`/body`) — upload a short video of a slow turn (or a series of
+   photos). Frames are extracted into a drag-to-rotate 360° viewer. Adjust the
+   "fit zones" so garments land on the right part of your body.
+4. **Outfits** (`/outfits`) — combinations are generated from your wardrobe and
+   ranked by colour harmony. Pick one to see it layered on your 360° avatar.
+   Shuffle for fresh ideas and save the ones you like.
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/cassidoo/next-netlify-starter&utm_source=github&utm_medium=nextstarter-cs&utm_campaign=devex-cs)
+Everything runs in the browser. Images and frames are stored in IndexedDB, so
+nothing is uploaded anywhere.
 
-(If you click this button, it will create a new repo for you that looks exactly like this one, and sets that repo up immediately for deployment on Netlify)
-
-## Getting Started
-
-First, run the development server:
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # static export to ./out (what Netlify publishes)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project layout
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```
+pages/        index, scan, wardrobe, body, outfits
+components/   Layout, SpinViewer, OutfitAvatar, GarmentCard
+lib/          db (IndexedDB), image (cut-out, crop, frames), color, outfits (engine), hooks
+```
 
-### Installation options
+## Roadmap ideas
 
-**Option one:** One-click deploy
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/cassidoo/next-netlify-starter&utm_source=github&utm_medium=nextstarter-cs&utm_campaign=devex-cs)
-
-**Option two:** Manual clone
-
-1. Clone this repo: `git clone https://github.com/cassidoo/next-netlify-starter.git`
-2. Navigate to the directory and run `npm run dev`
-3. Make your changes
-4. Connect to [Netlify](https://url.netlify.com/Bk4UicocL) manually (the `netlify.toml` file is the one you'll need to make sure stays intact to make sure the export is done and pointed to the right stuff)
+- ML segmentation (e.g. an on-device model) for cleaner cut-outs on busy backgrounds
+- True 3D body mesh from the capture instead of a frame-based spin
+- Weather / occasion aware suggestions and a "worn" log
+- Optional cloud sync with accounts
